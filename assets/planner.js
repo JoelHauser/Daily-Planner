@@ -1,101 +1,161 @@
 // variable to store and loop through scheduler
 var myDay = [
-    {
-        id: "0",
-        hour: "09",
-        time: "09",
-        meridiem: "am",
-        reminder: ""
-    },
-    {
-        id: "1",
-        hour: "10",
-        time: "10",
-        meridiem: "am",
-        reminder: ""
-    },
-    {
-        id: "2",
-        hour: "11",
-        time: "11",
-        meridiem: "am",
-        reminder: ""
-    },
-    {
-        id: "3",
-        hour: "12",
-        time: "12",
-        meridiem: "pm",
-        reminder: ""
-    },
-    {
-        id: "4",
-        hour: "01",
-        time: "13",
-        meridiem: "pm",
-        reminder: ""
-    },
-    {
-        id: "5",
-        hour: "02",
-        time: "14",
-        meridiem: "pm",
-        reminder: ""
-    },
-    {
-        id: "6",
-        hour: "03",
-        time: "15",
-        meridiem: "pm",
-        reminder: ""
-    },
-    {
-        id: "7",
-        hour: "04",
-        time: "16",
-        meridiem: "pm",
-        reminder: ""
-    },
-    {
-        id: "8",
-        hour: "05",
-        time: "17",
-        meridiem: "pm",
-        reminder: ""
-    },
-    
-]
+  {
+    id: "0",
+    hour: "09",
+    time: "09",
+    meridiem: "am",
+    reminder: "",
+  },
+  {
+    id: "1",
+    hour: "10",
+    time: "10",
+    meridiem: "am",
+    reminder: "",
+  },
+  {
+    id: "2",
+    hour: "11",
+    time: "11",
+    meridiem: "am",
+    reminder: "",
+  },
+  {
+    id: "3",
+    hour: "12",
+    time: "12",
+    meridiem: "pm",
+    reminder: "",
+  },
+  {
+    id: "4",
+    hour: "01",
+    time: "13",
+    meridiem: "pm",
+    reminder: "",
+  },
+  {
+    id: "5",
+    hour: "02",
+    time: "14",
+    meridiem: "pm",
+    reminder: "",
+  },
+  {
+    id: "6",
+    hour: "03",
+    time: "15",
+    meridiem: "pm",
+    reminder: "",
+  },
+  {
+    id: "7",
+    hour: "04",
+    time: "16",
+    meridiem: "pm",
+    reminder: "",
+  },
+  {
+    id: "8",
+    hour: "05",
+    time: "17",
+    meridiem: "pm",
+    reminder: "",
+  },
+];
 
 // get header date
 function getHeaderDate() {
-    var currentHeaderDate = moment().format('dddd, MMMM Do');
-    $("#currentDay").text(currentHeaderDate);
+  var currentHeaderDate = moment().format("dddd, MMMM Do");
+  $("#currentDay").text(currentHeaderDate);
 }
 
 // save data to local storage
 function saveReminders() {
-    localStorage.setItem("myDay", JSON.stringify(myDay));
+  localStorage.setItem("myDay", JSON.stringify(myDay));
 }
 
 // set data from local storage
 function displayReminders() {
-    myDay.forEach(function (_thisHour) {
-        $(`#${_thisHour.id}`).val(_thisHour.reminder);
-    })
+  myDay.forEach(function (_thisHour) {
+    $(`#${_thisHour.id}`).val(_thisHour.reminder);
+  });
 }
 
 // set leftover localstorage data to show if its saved
 function init() {
-    var storedDay = JSON.parse(localStorage.getItem("myDay"));
+  var storedDay = JSON.parse(localStorage.getItem("myDay"));
 
-    if (storedDay) {
-        myDay = storedDay;
-    }
+  if (storedDay) {
+    myDay = storedDay;
+  }
 
-    saveReminders();
-    displayReminders();
+  saveReminders();
+  displayReminders();
 }
 
 // load headerDate
 getHeaderDate();
 
+// create the rows
+myDay.forEach(function (thisHour) {
+  // creates time row
+  var hourRow = $("<form>").attr({
+    class: "row",
+  });
+  $(".container").append(hourRow);
+
+  // creates hour field
+  var hourField = $("<div>").text(`${thisHour.hour}${thisHour.meridiem}`).attr({
+    class: "col-md-2 hour",
+  });
+
+  // create form data
+  var hourPlan = $("<div>").attr({
+    class: "col-md-9 description p-0",
+  });
+  var planData = $("<textarea>");
+  hourPlan.append(planData);
+  planData.attr("id", thisHour.id);
+  if (thisHour.time < moment().format("HH")) {
+    planData.attr({
+      class: "past",
+    });
+  } else if (thisHour.time === moment().format("HH")) {
+    planData.attr({
+      class: "present",
+    });
+  } else if (thisHour.time > moment().format("HH")) {
+    planData.attr({
+      class: "future",
+    });
+  }
+
+  // save button
+  var saveBtn = $("<i class='far fa-save fa-lg'></i>");
+  var savePlan = $("<button>").attr({
+    class: "col-md-1 saveBtn",
+  });
+  savePlan.append(saveBtn);
+  hourRow.append(hourField, hourPlan, savePlan);
+});
+
+// load local storage
+init();
+
+// save data to local storage
+$(".saveBtn").on("click", function (event) {
+  event.preventDefault();
+  var saveIndex = $(this)
+    .siblings(".description")
+    .children(".future")
+    .attr("id");
+  myDay[saveIndex].reminder = $(this)
+    .siblings("description")
+    .children(".future")
+    .val();
+
+  saveReminders();
+  displayReminders();
+});
