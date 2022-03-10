@@ -86,11 +86,11 @@ function displayReminders() {
 // set leftover localstorage data to show if its saved
 function init() {
   var storedDay = JSON.parse(localStorage.getItem("myDay"));
-
+  
   if (storedDay) {
     myDay = storedDay;
   }
-
+  
   saveReminders();
   displayReminders();
 }
@@ -105,12 +105,12 @@ myDay.forEach(function (thisHour) {
     class: "row",
   });
   $(".container").append(hourRow);
-
+  
   // creates hour field
   var hourField = $("<div>").text(`${thisHour.hour}${thisHour.meridiem}`).attr({
     class: "col-md-2 hour",
   });
-
+  
   // create form data
   var hourPlan = $("<div>").attr({
     class: "col-md-9 description p-0",
@@ -131,7 +131,7 @@ myDay.forEach(function (thisHour) {
       class: "future",
     });
   }
-
+  
   // save button
   var saveBtn = $("<i class='far fa-save fa-lg'></i>");
   var savePlan = $("<button>").attr({
@@ -148,14 +148,16 @@ init();
 $(".saveBtn").on("click", function (event) {
   event.preventDefault();
   var saveIndex = $(this)
-    .siblings(".description")
-    .children(".future")
-    .attr("id");
+  .siblings(".description")
+  .children(".future")
+  .attr("id");
   myDay[saveIndex].reminder = $(this)
-    .siblings("description")
-    .children(".future")
-    .val();
-
+  .siblings("description")
+  .children(".future")
+  .val();
+  
+  
   saveReminders();
   displayReminders();
+  
 });
