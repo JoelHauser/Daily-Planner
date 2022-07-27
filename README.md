@@ -1,6 +1,6 @@
 
 # Simple Work Day Planner!
-In this application you can plan your 5am-9am work day schedule. Comes fully ready to take on your biggest day! 
+In this application you can plan your 9-5 work day schedule. Comes fully ready to take on your biggest day! 
 
 
 ## The Functional Site
